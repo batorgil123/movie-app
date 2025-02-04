@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Movie } from "@/components/types";
 import { Button } from "@/components/ui/button";
-
+import { Card } from "@/components/Card";
+import Link from "next/link";
+// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 export default function Upcoming() {
   const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
@@ -44,22 +46,22 @@ export default function Upcoming() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="flex justify-between items-center">
-        <p className="text-2xl font-bold">Upcoming</p>
-        <Button>See More</Button>
+    <div className="flex flex-col gap-4 p-4  max-w-[85%] ">
+      <div className="flex items-center justify-between">
+        <p className="text-foreground text-2xl font-semibold">Upcoming</p>
+        <Link href={`/category/upcoming`}>
+          <Button>See More</Button>
+        </Link>
       </div>
-      <div className="grid grid-cols-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {UpcomingMoviesData.map((element, index) => (
-          <div key={index} className="flex flex-col gap-2 bg-gray-900 p-4 rounded-lg shadow-lg">
-            <img
-              src={`https://image.tmdb.org/t/p/w500/${element.poster_path}`}
-              alt={element.title}
-              className="rounded-lg w-full h-[300px] object-cover"
-            />
-            <h1 className="text-lg font-bold text-white">{element.title}</h1>
-            <p className="text-gray-400 line-clamp-3 text-sm">{element.overview}</p>
-          </div>
+      <div className="flex flex-wrap gap-5 lg:gap-8 justify-center max-w-[70%]">
+        {UpcomingMoviesData.slice(0, 10).map((element, index) => (
+          <Card
+            key={index}
+            index={index}
+            path={element.poster_path}
+            vote={element.vote_average}
+            title={element.title}
+          />
         ))}
       </div>
     </div>
