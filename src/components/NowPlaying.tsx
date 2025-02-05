@@ -6,8 +6,9 @@ import ImageSlider from "@/components/ImageSlider";
 import { Movie } from "@/components/types";
 
 export default function  NowPlaying  () {
-  const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
-  const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
+  const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
+  const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [NPMoviesData, setNPMoviesData] = useState<Movie[]>([]);
