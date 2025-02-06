@@ -1,12 +1,16 @@
+"use client";
+
 import React from "react";
-import Popular from "@/components/Popular";
-const Page = ({ params }: { params: { p: string } }) => {
-  const { p } = params;
-console.log("param",p);
+import { useParams } from "next/navigation";
+import Movies from "@/components/Movies";
+const CategoryPage = () => {
+  const params = useParams();
 
   return (
-      <div></div>
+    <div className="flex flex-col gap-10 items-center  justify-center">
+      <Movies id={params.id as string} title={params.id as string} />
+    </div>
   );
 };
 
-export default Page;
+export default CategoryPage;

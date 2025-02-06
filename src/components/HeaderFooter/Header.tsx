@@ -5,23 +5,30 @@ import { Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 const Header = () => {
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
   return (
     <div className=" h-[59px] bg-background flex items-center justify-center ">
       <div className="flex items-center justify-between w-full max-w-screen-xl px-5 lg:px-0">
         <div className="flex items-center gap-x-2 text-indigo-700">
           <Film />
-          <h4 className="italic font-bold">Movie Z</h4>
+          <Button
+            onClick={() => router.replace("/")}
+            className="italic font-bold"
+          >
+            Movie Z
+          </Button>
         </div>
 
         <div className="hidden max-lg:flex max-lg:items-center gap-x-3 ">
           <Search className="text-muted-foreground opacity-[0.4]" size={20} />
           <Button
+          className=" rounded-[5px] border border-[#F4F4F4] focus:border-[#9c9898] "  
             onClick={() => {
               setTheme(theme === "dark" ? "light" : "dark");
             }}
-            
           >
             {theme === "dark" ? <Sun /> : <Moon />}
           </Button>
@@ -34,15 +41,15 @@ const Header = () => {
               className="w-full pl-10  rounded-[8px] border border-[F4F4F4] focus:border-[#9c9898] "
               type="text"
               placeholder="Search for movies"
-              
             ></Input>
           </div>
         </div>
         <Button
+          
           onClick={() => {
             setTheme(theme === "dark" ? "light" : "dark");
           }}
-          className="hidden lg:flex"
+          className="hidden lg:flex  rounded-[5px] border border-[#F4F4F4] focus:border-[#9c9898]"
         >
           {theme === "dark" ? <Sun /> : <Moon />}
         </Button>

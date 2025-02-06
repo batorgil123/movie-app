@@ -5,13 +5,15 @@ interface CardProps {
   path: string;
   title: string;
   vote: number;
+  onclick?: () => void;
 }
 
-export const Card: React.FC<CardProps> = ({ index, path, title, vote }) => {
+export const Card: React.FC<CardProps> = ({ index, path, title, vote, onclick }) => {
   return (
     <div
       key={index}
       className="group w-[157.5px] overflow-hidden  bg-secondary space-y-1 lg:w-[230px] bg-[#71717A] bg-opacity-[0.3] hover:bg-[#71717A] transition-all duration-300 ease-in-out rounded-[10px]  "
+      onClick={onclick}
     >
       <img
         src={`https://image.tmdb.org/t/p/w500/${path}`}
