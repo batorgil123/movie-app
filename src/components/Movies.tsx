@@ -10,10 +10,10 @@ import { useRouter } from "next/navigation";
 interface MoviesProps {
   id: string;
   title: string;
-  
+  slc: number;
 }
 
-export default function Movies({ id, title }: MoviesProps) {
+export default function Movies({ id, title, slc }: MoviesProps) {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
   const [loading, setLoading] = useState(false);
@@ -36,8 +36,7 @@ export default function Movies({ id, title }: MoviesProps) {
           },
         }
       );
-    
-      
+
       setMoviesData(response.data.results);
     } catch (error) {
       setError("Failed to fetch data");
@@ -53,31 +52,43 @@ export default function Movies({ id, title }: MoviesProps) {
   }, [id]);
 
   const formatTitle = (str: string) => {
-    return str
-      .replace(/_/, " ") 
-      .replace(/\b\w/g, (char) => char.toUpperCase()); 
+    return str.replace(/_/, " ").replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 p-4 max-w-[60%]">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-4 p-4 w-full items-center justify-center">
+      <div className="flex justify-between items-center max-w-[1280px] px-6 w-full">
         <p className="text-foreground text-2xl font-semibold">
           {formatTitle(title)}
         </p>
 
         <Button
           onClick={() => push(`category/${id}`)}
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none  text-primary underline-offset-4 hover:underline h-9 px-4 py-2"
+          className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold px-5 py-2.5 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
         >
           See More
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
         </Button>
       </div>
-      <div className="flex flex-wrap gap-5 lg:gap-8 justify-center">
-        {moviesData.slice(0, 10).map((movie: Movie) => (
-          <Card 
+      <div className="flex flex-wrap gap-5 justify-center max-w-[1280px]">
+        {moviesData.slice(0, slc).map((movie: Movie) => (
+          <Card
             key={movie.id}
             index={movie.id}
             path={movie.poster_path}
@@ -85,8 +96,6 @@ export default function Movies({ id, title }: MoviesProps) {
             title={movie.title}
             onclick={() => replace(`/detail/${movie.id}`)}
           />
-         
-          
         ))}
       </div>
     </div>
