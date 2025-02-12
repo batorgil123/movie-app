@@ -1,8 +1,11 @@
+"use client";
 import React from "react";
 import { Film } from "lucide-react";
 import { Mail } from "lucide-react";
 import { Phone } from "lucide-react";
+import { useRouter } from "next/navigation";
 const Footer = () => {
+  const router = useRouter();
   return (
     <footer className=" bg-indigo-700 py-10 px-5 text-sm text-[#fafafa]">
       <div className="flex flex-row justify-between gap-y-7   max-md:flex-col max-md:justify-between">
@@ -10,7 +13,7 @@ const Footer = () => {
           <div className="space-x-3 flex   flex-row items-center ">
             {" "}
             <Film />
-            <h4 className="italic font-bold">Movie Z</h4>
+            <h4 onClick={() => router.replace("/")} className="italic font-bold cursor-pointer">Movie Z</h4>
           </div>
 
           <p>© 2024 Movie Z. All Rights Reserved.</p>
