@@ -29,7 +29,7 @@ const Header = () => {
         <div className="hidden max-lg:flex max-lg:items-center gap-x-3">
           <Search className="text-muted-foreground opacity-[0.4]" size={20} />
           <Button
-            className="rounded-[5px] border border-[#F4F4F4] focus:border-[#9c9898]"
+            className="rounded-[5px] shadow-none border-none border-[#F4F4F4] focus:border-[#9c9898]"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
             {theme === "dark" ? <Sun /> : <Moon />}
@@ -38,15 +38,17 @@ const Header = () => {
 
         <div className="hidden relative lg:flex lg:justify-center lg:gap-x-3 lg:items-center">
           <div className="relative group">
-            <Button className="border border-gray-700 rounded-[5px]">
+            <Button onClick={() => setShowGenres(!showGenres)} className="border border-gray-700 rounded-[5px]">
               Genre
             </Button>
-            <div
-              className=" absolute w-[540px] left-0 mt-2 rounded-[10px] bg-gray-800 bg-opacity-90 text-white p-4 shadow-lg z-10 
-              opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300"
-            >
-              <Genre />
-            </div>
+            {showGenres && (
+              <div
+                className="absolute w-[540px] left-0 mt-2 rounded-[10px] bg-gray-800 bg-opacity-90 text-white p-4 shadow-lg z-20 group-hover:scale-100 transition-all duration-200"
+              >
+                <Genre />
+              </div>
+            )}
+            
           </div>
 
           <div className="relative text-muted-foreground w-[379px] flex items-center border-none">
@@ -61,7 +63,7 @@ const Header = () => {
 
         <Button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="hidden lg:flex rounded-[5px] border border-[#F4F4F4] focus:border-[#9c9898]"
+          className="hidden lg:flex shadow-none  rounded-[5px] border border-[#F4F4F4] focus:border-[#9c9898]"
         >
           {theme === "dark" ? <Sun /> : <Moon />}
         </Button>

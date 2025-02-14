@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useRouter,useParams } from "next/navigation";
 type GenreType = {
   id: number;
   name: string;
@@ -13,7 +13,7 @@ const Genre = () => {
   const [loading, setLoading] = useState(true);
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
-
+  const { push, replace } = useRouter();
   useEffect(() => {
     const getGenres = async () => {
       try {
@@ -43,6 +43,7 @@ const Genre = () => {
       {genres.map((genre) => (
         <button
           key={genre.id}
+          onClick={() => replace(`/genre/${genre.id}`)}
           className="px-4 py-2 bg-blue-600 rounded-full text-sm hover:bg-blue-700 transition"
         >
           {genre.name}

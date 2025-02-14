@@ -8,6 +8,7 @@ import { Card } from "@/components/Card";
 import { useRouter, useParams } from "next/navigation";
 
 export default function Similar() {
+  const [currentPage, setCurrentPage] = useState(1);
   const params = useParams();
   const [moviesData, setMoviesData] = useState<Movie[]>([]);
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -15,19 +16,18 @@ export default function Similar() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { push, replace } = useRouter();
-  console.log("params", params);
-
-  const getSimilarMovies = async () => {
-    console.log("params", params);
+  const [totalPages, setTotalPages] = useState(1);
+  const getSimilarMovies = async (page: number) => {
     if (!params.id) return;
     try {
       const response = await axios.get(
-        `${TMDB_BASE_URL}/movie/${params.id}/similar?language=en-US&page=1`,
+        `${TMDB_BASE_URL}/movie/${params.id}/similar?language=en-US&page=${page}`,
         {
           headers: { Authorization: `Bearer ${TMDB_API_TOKEN}` },
         }
       );
       setMoviesData(response.data.results);
+      setTotalPages(response.data.total_pages);
       setLoading(false);
     } catch (error) {
       setError("Error fetching similar movies");
@@ -38,9 +38,9 @@ export default function Similar() {
 
   useEffect(() => {
     if (params.id) {
-      getSimilarMovies();
+      getSimilarMovies(currentPage);
     }
-  }, [params.id]);
+  }, [params.id, currentPage]);
 
   if (loading) {
     return (
@@ -55,7 +55,7 @@ export default function Similar() {
   }
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center flex-col items-center gap-4">
       <div className="flex flex-col gap-4 p-4 max-w-[60%]">
         <div className="flex justify-between items-center">
           <p className="text-foreground text-2xl font-semibold">
@@ -64,7 +64,7 @@ export default function Similar() {
         </div>
 
         <div className="flex flex-wrap gap-5 lg:gap-8 justify-center">
-          {moviesData.slice(0, 20).map((movie: Movie) => (
+          {moviesData.map((movie: Movie) => (
             <Card
               key={movie.id}
               index={movie.id}
@@ -75,6 +75,27 @@ export default function Similar() {
             />
           ))}
         </div>
+      </div>
+      <div className="flex justify-center items-center gap-4 my-8">
+        <Button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-700 text-white rounded-[7px] disabled:opacity-50"
+        >
+          Previous
+        </Button>
+        <span className="text-lg font-medium">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-700 text-white rounded-[7px] disabled:opacity-50"
+        >
+          Next
+        </Button>
       </div>
     </div>
   );
