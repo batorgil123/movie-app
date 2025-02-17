@@ -5,6 +5,7 @@ import axios from "axios";
 import { MovieDataType } from "@/components/moviedatatype";
 import { Star } from "lucide-react";
 import { Card } from "@/components/Card";
+import {Button} from "@/components/ui/button";
 const Page = () => {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
@@ -160,7 +161,7 @@ const Page = () => {
         <div className="space-y-5">
           <div className="flex justify-between">
             <h2 className="text-2xl font-semibold">More like this</h2>
-            <button
+            <Button
               onClick={() => push(`/similar/${params.id}`)}
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary underline-offset-4 hover:underline h-9 px-4 py-2"
             >
@@ -179,7 +180,7 @@ const Page = () => {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </button>
+            </Button>
           </div>
           <div className="flex flex-wrap gap-5 lg:gap-8 justify-center ">
             {similarMovies.slice(0, 4).map((movie: any) => (
