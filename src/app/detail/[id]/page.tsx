@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MovieDataType } from "@/components/moviedatatype";
 import { Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/Card";
 const Page = () => {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;

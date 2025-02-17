@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter,useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 type GenreType = {
   id: number;
   name: string;
@@ -11,9 +11,10 @@ type GenreType = {
 const Genre = () => {
   const [genres, setGenres] = useState<GenreType[]>([]);
   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState<string | null>(null);
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
-  const { push, replace } = useRouter();
+  const { replace } = useRouter();
   useEffect(() => {
     const getGenres = async () => {
       try {
@@ -34,9 +35,9 @@ const Genre = () => {
     getGenres();
   }, []);
 
-  if (loading) {
-    return <p className="text-center text-gray-400">Loading...</p>;
-  }
+ 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="flex flex-wrap gap-2">
