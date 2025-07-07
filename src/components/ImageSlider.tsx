@@ -11,7 +11,6 @@ import { Movie } from "./types";
 import { Button } from "./ui/button";
 import { Play, X } from "lucide-react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 interface ImageSliderProps {
@@ -25,7 +24,6 @@ const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
 const ImageSlider: React.FC<ImageSliderProps> = ({ element }) => {
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
   const fetchTrailer = async (movieId: number) => {
     try {
       const response = await axios.get(
@@ -62,7 +60,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ element }) => {
           <SwiperSlide key={index}>
             <div className="relative w-full h-[400px] md:h-[600px]">
               <Image
-                src={`${TMDB_IMAGE_SERVICE}/w780${data.backdrop_path}`}
+                src={`${TMDB_IMAGE_SERVICE}/original${data.backdrop_path}`}
                 alt={data.title}
                 fill
                 className="object-cover rounded-lg cursor-pointer"
