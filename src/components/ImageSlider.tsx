@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -12,6 +12,8 @@ import { Button } from "./ui/button";
 import { Play, X } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 interface ImageSliderProps {
   element: Movie[];
 }
@@ -32,9 +34,9 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ element }) => {
           headers: { Authorization: `Bearer ${TMDB_API_TOKEN}` },
         }
       );
-      const trailers = response.data.results;
+      const trailers = response.data.results as { type: string; site: string; key: string }[];
       const officialTrailer = trailers.find(
-        (video: any) => video.type === "Trailer" && video.site === "YouTube"
+        (video) => video.type === "Trailer" && video.site === "YouTube"
       );
       setTrailerKey(officialTrailer ? officialTrailer.key : null);
       setIsModalOpen(true);
@@ -58,25 +60,29 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ element }) => {
       >
         {element.map((data, index) => (
           <SwiperSlide key={index}>
-            <img
-              src={`${TMDB_IMAGE_SERVICE}/original/${data.backdrop_path}`}
-              alt={`Slide ${index + 1}`}
-              className="w-screen h-[600px] object-cover"
-              onClick={()=>router.replace(`/detail/${data.id}`)}
-            />
-            <div className="lg:absolute p-3 top-[25%] left-[5%] bg-opacity-60 text-black lg:text-white rounded-lg flex flex-col items-start gap-4 w-[404px] h-auto">
-              <h1 className="text-2xl font-bold">{data.title}</h1>
-              <p className="line-clamp-4">{data.overview}</p>
-              <div className="flex gap-2 items-center">
-                <StarIcon />
-                <span>{data.vote_average.toFixed(1)}</span>
-              </div>
-              <Button
-                className="flex items-center gap-2 bg-red-600 rounded-[5px] px-4 py-2"
+            <div className="relative w-full h-[400px] md:h-[600px]">
+              <Image
+                src={`${TMDB_IMAGE_SERVICE}/w780${data.backdrop_path}`}
+                alt={data.title}
+                fill
+                className="object-cover rounded-lg cursor-pointer"
                 onClick={() => fetchTrailer(data.id)}
-              >
-                <Play /> Watch Trailer
-              </Button>
+                priority
+              />
+              <div className="absolute p-3 top-[25%] left-[5%] bg-opacity-60 text-black lg:text-white rounded-lg flex flex-col items-start gap-4 w-[404px] h-auto">
+                <h1 className="text-2xl font-bold">{data.title}</h1>
+                <p className="line-clamp-4">{data.overview}</p>
+                <div className="flex gap-2 items-center">
+                  <StarIcon />
+                  <span>{data.vote_average.toFixed(1)}</span>
+                </div>
+                <Button
+                  className="flex items-center gap-2 bg-red-600 rounded-[5px] px-4 py-2"
+                  onClick={() => fetchTrailer(data.id)}
+                >
+                  <Play /> Watch Trailer
+                </Button>
+              </div>
             </div>
           </SwiperSlide>
         ))}

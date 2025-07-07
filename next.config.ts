@@ -2,12 +2,18 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [{ hostname: "https://image.tmdb.org/t/p/" }],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+        pathname: "/t/p/**",
+      },
+    ],
   },
   env: {
-    TMDB_BASE_URL: process.env.TMDB_BASE_URL || "",
-    TMDB_IMAGE_SERVICE: process.env.TMDB_IMAGE_SERVICE || "",
-    TMDB_API_TOKEN: process.env.TMDB_API_TOKEN || "",
+    NEXT_PUBLIC_TMDB_BASE_URL: process.env.NEXT_PUBLIC_TMDB_BASE_URL || "",
+    NEXT_PUBLIC_TMDB_IMAGE_SERVICE: process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE || "",
+    NEXT_PUBLIC_TMDB_API_TOKEN: process.env.NEXT_PUBLIC_TMDB_API_TOKEN || "",
   },
 };
 

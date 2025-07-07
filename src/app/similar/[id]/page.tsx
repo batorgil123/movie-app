@@ -15,7 +15,7 @@ export default function Similar() {
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { push, replace } = useRouter();
+  const { push } = useRouter();
   const [totalPages, setTotalPages] = useState(1);
   const getSimilarMovies = async (page: number) => {
     if (!params.id) return;
@@ -26,7 +26,7 @@ export default function Similar() {
           headers: { Authorization: `Bearer ${TMDB_API_TOKEN}` },
         }
       );
-      setMoviesData(response.data.results);
+      setMoviesData(response.data.results as Movie[]);
       setTotalPages(response.data.total_pages);
       setLoading(false);
     } catch (error) {
@@ -40,7 +40,8 @@ export default function Similar() {
     if (params.id) {
       getSimilarMovies(currentPage);
     }
-  }, [params.id, currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id, currentPage, TMDB_BASE_URL, TMDB_API_TOKEN]);
 
   if (loading) {
     return (
@@ -55,44 +56,35 @@ export default function Similar() {
   }
 
   return (
-    <div className="w-full flex justify-center flex-col items-center gap-4">
-      <div className="flex flex-col gap-4 p-4 max-w-[60%]">
-        <div className="flex justify-between items-center">
-          <p className="text-foreground text-2xl font-semibold">
-            Similar Movies
-          </p>
-        </div>
-
-        <div className="flex flex-wrap gap-5 lg:gap-8 justify-center">
-          {moviesData.map((movie: Movie) => (
+    <div className="max-w-5xl mx-auto py-10">
+      <h1 className="text-2xl font-bold mb-6">Similar Movies</h1>
+      <div className="flex flex-wrap gap-5 justify-center">
+        {moviesData.length === 0 ? (
+          <p>No similar movies found.</p>
+        ) : (
+          moviesData.map((movie) => (
             <Card
               key={movie.id}
+              title={movie.title}
               index={movie.id}
               path={movie.poster_path}
               vote={movie.vote_average}
-              title={movie.title}
-              onclick={() => replace(`/detail/${movie.id}`)}
+              onclick={() => push(`/detail/${movie.id}`)}
             />
-          ))}
-        </div>
+          ))
+        )}
       </div>
-      <div className="flex justify-center items-center gap-4 my-8">
+      <div className="flex justify-center mt-8 gap-2">
         <Button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-700 text-white rounded-[7px] disabled:opacity-50"
         >
           Previous
         </Button>
-        <span className="text-lg font-medium">
-          Page {currentPage} of {totalPages}
-        </span>
+        <span className="px-4 py-2">Page {currentPage} of {totalPages}</span>
         <Button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
+          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-700 text-white rounded-[7px] disabled:opacity-50"
         >
           Next
         </Button>

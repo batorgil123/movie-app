@@ -5,7 +5,18 @@ import axios from "axios";
 import { MovieDataType } from "@/components/moviedatatype";
 import { Star } from "lucide-react";
 import { Card } from "@/components/Card";
-import {Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
+type CrewMember = { job: string; name: string };
+type CastMember = { name: string };
+type SimilarMovie = {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+};
+
 const Page = () => {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
@@ -16,9 +27,10 @@ const Page = () => {
   const [director, setDirector] = useState<string | null>(null);
   const [writers, setWriters] = useState<string[]>([]);
   const [stars, setStars] = useState<string[]>([]);
-  const [similarMovies, setSimilarMovies] = useState([]);
+  const [similarMovies, setSimilarMovies] = useState<SimilarMovie[]>([]);
   const params = useParams();
   const { push } = useRouter();
+
   const getMovieData = async () => {
     if (!params.id) return;
     try {
@@ -39,21 +51,18 @@ const Page = () => {
         }),
       ]);
       setMovieData(movieRes.data);
-      const { cast, crew } = creditsRes.data;
-      const director = crew.find((person: any) => person.job === "Director");
+      const { cast, crew } = creditsRes.data as { cast: CastMember[]; crew: CrewMember[] };
+      const director = crew.find((person) => person.job === "Director");
       setDirector(director ? director.name : "Unknown");
       const writers = crew
-        .filter(
-          (person: any) =>
-            person.job === "Screenplay" || person.job === "Writer"
-        )
-        .map((writer: any) => writer.name);
+        .filter((person) => person.job === "Screenplay" || person.job === "Writer")
+        .map((writer) => writer.name);
       setWriters(writers);
-      const mainStars = cast.slice(0, 3).map((actor: any) => actor.name);
+      const mainStars = cast.slice(0, 3).map((actor) => actor.name);
       setStars(mainStars);
-      const videos = trailerRes.data.results;
+      const videos = trailerRes.data.results as { type: string; site: string; key: string }[];
       const officialTrailer = videos.find(
-        (video: any) => video.type === "Trailer" && video.site === "YouTube"
+        (video) => video.type === "Trailer" && video.site === "YouTube"
       );
       setTrailerKey(officialTrailer ? officialTrailer.key : null);
     } catch (error) {
@@ -63,6 +72,7 @@ const Page = () => {
       setLoading(false);
     }
   };
+
   const getSimilarMovies = async () => {
     if (!params.id) return;
     try {
@@ -72,17 +82,19 @@ const Page = () => {
           headers: { Authorization: `Bearer ${TMDB_API_TOKEN}` },
         }
       );
-      setSimilarMovies(response.data.results);
+      setSimilarMovies(response.data.results as SimilarMovie[]);
     } catch (error) {
       console.error("Error fetching similar movies:", error);
     }
   };
+
   useEffect(() => {
     if (params.id) {
       getMovieData();
       getSimilarMovies();
     }
-  }, [params.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id, TMDB_BASE_URL, TMDB_API_TOKEN]);
 
   if (loading) {
     return (
@@ -114,10 +126,13 @@ const Page = () => {
         </div>
         <div className="flex flex-col lg:flex-row lg:gap-x-6 w-full">
           <div className="hidden lg:block w-[290px] h-[428px] rounded overflow-hidden">
-            <img
+            <Image
               src={`https://image.tmdb.org/t/p/w500${movieData.poster_path}`}
               alt={movieData.title}
+              width={290}
+              height={428}
               className="w-full h-auto rounded-lg shadow-xl object-cover"
+              priority
             />
           </div>
           <div className="relative w-[375px] lg:w-[760px] h-[211px] lg:h-[428px]">
@@ -183,7 +198,7 @@ const Page = () => {
             </Button>
           </div>
           <div className="flex flex-wrap gap-5 lg:gap-8 justify-center ">
-            {similarMovies.slice(0, 4).map((movie: any) => (
+            {similarMovies.slice(0, 4).map((movie) => (
               <Card
                 key={movie.id}
                 title={movie.title}
@@ -199,4 +214,5 @@ const Page = () => {
     </div>
   );
 };
+
 export default Page;
