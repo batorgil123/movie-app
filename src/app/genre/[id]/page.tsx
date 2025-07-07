@@ -4,12 +4,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Card } from "@/components/Card";
 
+type Movie = {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+};
+
 const GenreDetailPage = () => {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const params = useParams();
   const { push } = useRouter();
 
@@ -25,15 +32,16 @@ const GenreDetailPage = () => {
             headers: { Authorization: `Bearer ${TMDB_API_TOKEN}` },
           }
         );
-        setMovies(response.data.results);
-      } catch (err) {
+        setMovies(response.data.results as Movie[]);
+      } catch (error) {
         setError("Failed to fetch movies for this genre.");
       } finally {
         setLoading(false);
       }
     };
     fetchMoviesByGenre();
-  }, [params.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id, TMDB_BASE_URL, TMDB_API_TOKEN]);
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
