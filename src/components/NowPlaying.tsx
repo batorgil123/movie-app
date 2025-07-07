@@ -12,26 +12,6 @@ export default function  NowPlaying  () {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [NPMoviesData, setNPMoviesData] = useState<Movie[]>([]);
-  const getMovieData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `${TMDB_BASE_URL}/movie/now_playing?language=en-US&page=1`,
-        {
-          headers: {
-            Authorization: `Bearer ${TMDB_API_TOKEN}`,
-          },
-        }
-      );
-      setNPMoviesData(response.data.results);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data.status_message);
-      }
-    }
-  };
 
   useEffect(() => {
     const getMovieData = async () => {
