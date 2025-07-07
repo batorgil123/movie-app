@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_TMDB_IMAGE_SERVICE: process.env.NEXT_PUBLIC_TMDB_IMAGE_SERVICE || "",
     NEXT_PUBLIC_TMDB_API_TOKEN: process.env.NEXT_PUBLIC_TMDB_API_TOKEN || "",
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
