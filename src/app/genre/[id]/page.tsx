@@ -15,7 +15,6 @@ const GenreDetailPage = () => {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const params = useParams();
   const { push } = useRouter();
@@ -24,7 +23,6 @@ const GenreDetailPage = () => {
     const fetchMoviesByGenre = async () => {
       if (!params.id) return;
       setLoading(true);
-      setError(null);
       try {
         const response = await axios.get(
           `${TMDB_BASE_URL}/discover/movie?with_genres=${params.id}&language=en-US`,
@@ -34,17 +32,14 @@ const GenreDetailPage = () => {
         );
         setMovies(response.data.results as Movie[]);
       } catch (error) {
-        setError("Failed to fetch movies for this genre.");
       } finally {
         setLoading(false);
       }
     };
     fetchMoviesByGenre();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, TMDB_BASE_URL, TMDB_API_TOKEN]);
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
-  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
   return (
     <div className="max-w-5xl mx-auto py-10">

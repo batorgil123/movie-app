@@ -19,50 +19,42 @@ export default function Movies({ id, title, slc, seemore }: MoviesProps) {
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [moviesData, setMoviesData] = useState<Movie[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const { push, replace } = useRouter();
 
-  const getMovieData = async (page: number) => {
-    if (!id) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await axios.get(
-        `${TMDB_BASE_URL}/movie/${id}?language=en-US&page=${page}`,
-        {
-          headers: {
-            Authorization: `Bearer ${TMDB_API_TOKEN}`,
-          },
-        }
-      );
-
-      setMoviesData(response.data.results);
-      setTotalPages(response.data.total_pages);
-    } catch (error) {
-      setError("Failed to fetch data");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (id) {
+      const getMovieData = async (page: number) => {
+        try {
+          setLoading(true);
+          const response = await axios.get(
+            `${TMDB_BASE_URL}/movie/${id}?language=en-US&page=${page}`,
+            {
+              headers: {
+                Authorization: `Bearer ${TMDB_API_TOKEN}`,
+              },
+            }
+          );
+          setMoviesData(response.data.results);
+          setTotalPages(response.data.total_pages);
+        } catch (error) {
+          console.error("Failed to fetch data", error);
+        } finally {
+          setLoading(false);
+        }
+      };
       getMovieData(currentPage);
     }
-  }, [id, currentPage]);
+  }, [id, currentPage, TMDB_BASE_URL, TMDB_API_TOKEN]);
 
   const formatTitle = (str: string) => {
     return str.replace(/_/, " ").replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <div className="flex flex-col gap-4 p-4 w-full items-center justify-center">

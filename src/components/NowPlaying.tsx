@@ -34,8 +34,28 @@ export default function  NowPlaying  () {
   };
 
   useEffect(() => {
+    const getMovieData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `${TMDB_BASE_URL}/movie/now_playing?language=en-US&page=1`,
+          {
+            headers: {
+              Authorization: `Bearer ${TMDB_API_TOKEN}`,
+            },
+          }
+        );
+        setNPMoviesData(response.data.results);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        if (axios.isAxiosError(error)) {
+          setError(error.response?.data.status_message);
+        }
+      }
+    };
     getMovieData();
-  }, []);
+  }, [TMDB_BASE_URL, TMDB_API_TOKEN]);
   if (loading) {
     return <div>Loading</div>;
   }
