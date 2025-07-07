@@ -12,6 +12,15 @@ const Header = () => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [showGenres, setShowGenres] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (search.trim()) {
+      router.push(`/search?query=${encodeURIComponent(search.trim())}`);
+      setSearch("");
+    }
+  };
 
   return (
     <div className="h-[59px] bg-background flex items-center justify-center relative">
@@ -51,14 +60,16 @@ const Header = () => {
             
           </div>
 
-          <div className="relative text-muted-foreground w-[379px] flex items-center border-none">
+          <form onSubmit={handleSearch} className="relative text-muted-foreground w-[379px] flex items-center border-none">
             <Search className="absolute left-[10px] opacity-[0.4]" size={20} />
             <Input
               className="w-full pl-10 rounded-[8px] border border-[#F4F4F4] focus:border-[#9c9898] placeholder-opacity-[0.2]"
               type="text"
               placeholder="Search for movies"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
             />
-          </div>
+          </form>
         </div>
 
         <Button
