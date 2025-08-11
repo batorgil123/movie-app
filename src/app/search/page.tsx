@@ -3,6 +3,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card } from "@/components/Card";
+import { SearchPageSkeleton } from "@/components/ui/skeleton";
+import { useLoading } from "@/components/loading-context";
 
 type Movie = {
   id: number;
@@ -14,6 +16,7 @@ type Movie = {
 const SearchPage = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
+  const { setIsLoading } = useLoading();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -43,10 +46,13 @@ const SearchPage = () => {
     fetchMovies();
   }, [query]);
 
+  if (loading) {
+    return <SearchPageSkeleton />;
+  }
+
   return (
     <div className="max-w-5xl mx-auto py-10">
       <h1 className="text-2xl font-bold mb-6">Search Results for "{query}"</h1>
-      {loading && <div className="text-center py-10">Loading...</div>}
       {error && <div className="text-center py-10 text-red-500">{error}</div>}
       {!loading && !error && (
         <div className="flex flex-wrap gap-5 justify-center">

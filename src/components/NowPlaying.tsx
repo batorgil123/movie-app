@@ -4,10 +4,13 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import ImageSlider from "@/components/ImageSlider";
 import { Movie } from "@/components/types";
+import { HeroSliderSkeleton } from "@/components/ui/skeleton";
+import { useLoading } from "./loading-context";
 
 export default function  NowPlaying  () {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
+  const { setIsLoading } = useLoading();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -36,8 +39,9 @@ export default function  NowPlaying  () {
     };
     getMovieData();
   }, [TMDB_BASE_URL, TMDB_API_TOKEN]);
+  
   if (loading) {
-    return <div>Loading</div>;
+    return <HeroSliderSkeleton />;
   }
   if (error) {
     return <div>{error}</div>;

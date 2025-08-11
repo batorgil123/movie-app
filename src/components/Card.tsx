@@ -14,7 +14,7 @@ export const Card: React.FC<CardProps> = ({ index, path, title, vote, onclick })
   return (
     <div
       key={index}
-      className="group w-[180px] h-[300px] lg:w-[230px] lg:h-[340px] overflow-hidden bg-secondary space-y-1 bg-[#71717A] bg-opacity-[0.3] hover:bg-[#71717A] transition-all duration-300 ease-in-out rounded-[10px] cursor-pointer flex flex-col"
+      className="group w-[180px] lg:w-[230px] overflow-hidden bg-secondary space-y-1 bg-[#71717A] bg-opacity-[0.3] hover:bg-[#71717A] transition-all duration-300 ease-in-out rounded-[10px] cursor-pointer flex flex-col"
       onClick={onclick}
     >
       <div className="relative w-full h-[220px] lg:h-[280px]">
@@ -30,7 +30,7 @@ export const Card: React.FC<CardProps> = ({ index, path, title, vote, onclick })
         <StarIcon color="#FDE047" height={16} width={16} />
         <span>{vote}</span>
       </div>
-      <h1 className="h-12 overflow-hidden text-ellipsis line-clamp-2 text-base lg:text-lg text-foreground px-2">
+      <h1 className="min-h-[3rem] max-h-[4rem] overflow-hidden text-ellipsis line-clamp-2 text-base lg:text-lg text-foreground px-2 pb-2 leading-tight">
         {title}
       </h1>
     </div>
