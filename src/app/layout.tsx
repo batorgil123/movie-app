@@ -4,6 +4,9 @@ import "./globals.css";
 import Header from "@/components/HeaderFooter/Header";
 import Footer from "@/components/HeaderFooter/Footer";
 import  {ThemeProvider}  from "@/components/theme-provider";
+import { LoadingProvider } from "@/components/loading-context";
+import ConditionalFooter from "@/components/ConditionalFooter";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,9 +33,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <LoadingProvider>
           <Header />
           {children}
-          <Footer />
+          <ConditionalFooter />
+        </LoadingProvider>
        </ThemeProvider>
       </body>
     </html>

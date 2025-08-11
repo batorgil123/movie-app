@@ -6,7 +6,9 @@ import { MovieDataType } from "@/components/moviedatatype";
 import { Star } from "lucide-react";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
+import { MovieDetailSkeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
+import { useLoading } from "@/components/loading-context";
 
 type CrewMember = { job: string; name: string };
 type CastMember = { name: string };
@@ -20,6 +22,7 @@ type SimilarMovie = {
 const Page = () => {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
+  const { setIsLoading } = useLoading();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [movieData, setMovieData] = useState<MovieDataType | null>(null);
@@ -97,11 +100,7 @@ const Page = () => {
   }, [params.id, TMDB_BASE_URL, TMDB_API_TOKEN]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600"></div>
-      </div>
-    );
+    return <MovieDetailSkeleton />;
   }
   if (error) {
     return <div className="text-center py-10 text-red-500">{error}</div>;

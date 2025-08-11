@@ -5,7 +5,9 @@ import axios from "axios";
 import { Movie } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/Card";
+import { MovieGridSkeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
+import { useLoading } from "./loading-context";
 
 interface MoviesProps {
   id: string;
@@ -17,6 +19,7 @@ interface MoviesProps {
 export default function Movies({ id, title, slc, seemore }: MoviesProps) {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
+  const { setIsLoading } = useLoading();
 
   const [loading, setLoading] = useState(false);
   const [moviesData, setMoviesData] = useState<Movie[]>([]);
@@ -54,7 +57,7 @@ export default function Movies({ id, title, slc, seemore }: MoviesProps) {
     return str.replace(/_/, " ").replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <MovieGridSkeleton count={slc} />;
 
   return (
     <div className="flex flex-col gap-4 p-4 w-full items-center justify-center">

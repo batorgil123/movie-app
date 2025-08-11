@@ -1,18 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Film, Moon, Sun, Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Genre from "../fetchgenres";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const pathname = usePathname();
   const [showGenres, setShowGenres] = useState(false);
   const [search, setSearch] = useState("");
+  const genreMenuRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,6 +23,32 @@ const Header = () => {
       setSearch("");
     }
   };
+
+  const handleGenreClick = () => {
+    setShowGenres(false);
+  };
+
+  // Close genre menu when route changes
+  useEffect(() => {
+    setShowGenres(false);
+  }, [pathname]);
+
+  // Close genre menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (genreMenuRef.current && !genreMenuRef.current.contains(event.target as Node)) {
+        setShowGenres(false);
+      }
+    };
+
+    if (showGenres) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showGenres]);
 
   return (
     <div className="h-[59px] bg-background flex items-center justify-center relative">
@@ -46,7 +74,7 @@ const Header = () => {
         </div>
 
         <div className="hidden relative lg:flex lg:justify-center lg:gap-x-3 lg:items-center">
-          <div className="relative group">
+          <div className="relative group" ref={genreMenuRef}>
             <Button onClick={() => setShowGenres(!showGenres)} className="border border-gray-700 rounded-[5px]">
               Genre
             </Button>
@@ -54,7 +82,7 @@ const Header = () => {
               <div
                 className="absolute w-[540px] left-0 mt-2 rounded-[10px] bg-gray-800 bg-opacity-90 text-white p-4 shadow-lg z-20 group-hover:scale-100 transition-all duration-200"
               >
-                <Genre />
+                <Genre onGenreClick={handleGenreClick} />
               </div>
             )}
             

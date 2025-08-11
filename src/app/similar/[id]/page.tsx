@@ -5,7 +5,9 @@ import axios from "axios";
 import { Movie } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/Card";
+import { MovieGridSkeleton } from "@/components/ui/skeleton";
 import { useRouter, useParams } from "next/navigation";
+import { useLoading } from "@/components/loading-context";
 
 export default function Similar() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,13 +15,16 @@ export default function Similar() {
   const [moviesData, setMoviesData] = useState<Movie[]>([]);
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
+  const { setIsLoading } = useLoading();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { push } = useRouter();
   const [totalPages, setTotalPages] = useState(1);
+  
   const getSimilarMovies = async (page: number) => {
     if (!params.id) return;
     try {
+      setLoading(true);
       const response = await axios.get(
         `${TMDB_BASE_URL}/movie/${params.id}/similar?language=en-US&page=${page}`,
         {
@@ -45,8 +50,9 @@ export default function Similar() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600"></div>
+      <div className="max-w-5xl mx-auto py-10">
+        <div className="h-8 w-48 bg-primary/10 animate-pulse rounded-md mb-6"></div>
+        <MovieGridSkeleton count={20} />
       </div>
     );
   }

@@ -3,6 +3,8 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Card } from "@/components/Card";
+import { MovieGridSkeleton } from "@/components/ui/skeleton";
+import { useLoading } from "@/components/loading-context";
 
 type Movie = {
   id: number;
@@ -14,6 +16,7 @@ type Movie = {
 const GenreDetailPage = () => {
   const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
   const TMDB_API_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_TOKEN;
+  const { setIsLoading } = useLoading();
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const params = useParams();
@@ -32,6 +35,7 @@ const GenreDetailPage = () => {
         );
         setMovies(response.data.results as Movie[]);
       } catch (error) {
+        // Handle error if needed
       } finally {
         setLoading(false);
       }
@@ -39,7 +43,14 @@ const GenreDetailPage = () => {
     fetchMoviesByGenre();
   }, [params.id, TMDB_BASE_URL, TMDB_API_TOKEN]);
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="max-w-5xl mx-auto py-10">
+        <div className="h-8 w-48 bg-primary/10 animate-pulse rounded-md mb-6"></div>
+        <MovieGridSkeleton count={20} />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto py-10">
